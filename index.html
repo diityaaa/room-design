@@ -180,6 +180,14 @@ label.f input[type=color]{padding:2px;height:32px}
 .clist li b{display:block;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .clist li small{color:var(--muted);font-family:var(--f-mono);font-size:11px}
 .err{color:var(--bad);font-size:13px;margin:0}
+.gate{position:fixed;inset:0;z-index:70;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:16px}
+.gbox{width:min(380px,100%);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:24px;display:flex;flex-direction:column;gap:12px}
+.gbox h2{font-size:28px;line-height:1.05}
+.gbox p{margin:0;color:var(--muted);font-size:13px}
+.gbox .err{color:var(--bad)}
+.gbox .btn.primary{padding:9px 12px}
+.linkbtn{background:none;border:none;color:var(--muted);font-size:12.5px;text-decoration:underline;cursor:pointer;padding:2px}
+.linkbtn:hover{color:var(--ink)}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:4px;font-size:13px;z-index:60;max-width:calc(100% - 32px)}
 @media (max-width:1240px){
   .app{grid-template-columns:250px minmax(0,1fr)}
@@ -354,6 +362,17 @@ label.f input[type=color]{padding:2px;height:32px}
       <button class="btn" id="m-close" type="button" style="margin-left:auto">Tutup</button>
     </div>
   </div>
+</div>
+<div class="gate" id="gate" hidden>
+  <form class="gbox" id="g-form">
+    <h2>Perancang Denah Rumah</h2>
+    <p>Masuk dengan akun Brankas Anda agar rancangan tersimpan di cloud dan dapat dibuka dari perangkat mana pun.</p>
+    <label class="f">Email<input id="g-email" type="email" autocomplete="username" required placeholder="nama@email.com"></label>
+    <label class="f">Kata sandi<input id="g-pass" type="password" autocomplete="current-password" required></label>
+    <p class="err" id="g-err" hidden></p>
+    <button class="btn primary" type="submit" id="g-in">Masuk</button>
+    <button class="linkbtn" type="button" id="g-skip">Lanjutkan tanpa masuk (tersimpan di perangkat ini saja)</button>
+  </form>
 </div>
 <div class="modal" id="cloud" hidden>
   <div class="box" role="dialog" aria-labelledby="cloud-title">
@@ -1153,7 +1172,7 @@ document.querySelectorAll('#walkpad [data-k]').forEach(b=>{ const k=b.dataset.k;
 
 /* ================= Keyboard ================= */
 window.addEventListener('keydown',e=>{
-  const tag=document.activeElement&&document.activeElement.tagName; if(/INPUT|SELECT|TEXTAREA/.test(tag)||!$('modal').hidden||!$('cloud').hidden) return;
+  const tag=document.activeElement&&document.activeElement.tagName; if(/INPUT|SELECT|TEXTAREA/.test(tag)||!$('modal').hidden||!$('cloud').hidden||!$('gate').hidden) return;
   const k=e.key.toLowerCase();
   if((e.ctrlKey||e.metaKey)&&k==='z'){ e.preventDefault(); e.shiftKey?redo():undo(); return; }
   if((e.ctrlKey||e.metaKey)&&k==='y'){ e.preventDefault(); redo(); return; }
@@ -1205,9 +1224,19 @@ function renderCloudBadge(){ const b=$('btn-cloud'); if(!b) return;
 async function initCloud(){
   if(!window.supabase){ cloudErr='Pustaka Supabase gagal dimuat. Periksa koneksi internet lalu muat ulang halaman.'; renderCloudBadge(); return; }
   try{ sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,storageKey:'perancang-rumah-auth'}}); }catch(e){ cloudErr=sbErr(e); return; }
-  try{ const {data}=await sb.auth.getSession(); sbUser=data&&data.session?data.session.user:null; }catch(e){}
+  let online=true;
+  try{ const {data}=await sb.auth.getSession(); sbUser=data&&data.session?data.session.user:null; }catch(e){ online=false; }
   sb.auth.onAuthStateChange((ev,s)=>{ sbUser=s?s.user:null; renderCloudBadge(); if(!$('cloud').hidden) renderCloud(); });
-  renderCloudBadge(); }
+  renderCloudBadge();
+  let skipped=false; try{ skipped=sessionStorage.getItem('pr-skip')==='1'; }catch(e){}
+  if(!sbUser&&online&&!skipped&&!/claude\.ai|claudeusercontent|anthropic/.test(location.hostname)) $('gate').hidden=false;
+  if(sbUser&&cloud.id&&state.sample) cloudOpen(cloud.id); }
+$('g-form').addEventListener('submit',async e=>{ e.preventDefault(); const b=$('g-in'), er=$('g-err'); b.disabled=true; b.textContent='Memproses…'; er.hidden=true;
+  try{ const {data,error}=await sb.auth.signInWithPassword({email:$('g-email').value.trim(),password:$('g-pass').value}); if(error) throw error; sbUser=data.user; $('gate').hidden=true; renderCloudBadge(); toast('Berhasil masuk');
+    const {data:rows}=await sb.from('rancangan_rumah').select('id').order('updated_at',{ascending:false}).limit(1); if(cloud.id) cloudOpen(cloud.id); else if(rows&&rows.length&&state.sample) cloudOpen(rows[0].id);
+  }catch(err){ er.textContent=sbErr(err); er.hidden=false; }
+  b.disabled=false; b.textContent='Masuk'; });
+$('g-skip').addEventListener('click',()=>{ try{ sessionStorage.setItem('pr-skip','1'); }catch(e){} $('gate').hidden=true; });
 function cloudDirty(){ if(!sbUser||!cloud.id) return; cloudSt='dirty'; renderCloudBadge(); if(cloud.auto){ clearTimeout(adT); adT=setTimeout(()=>cloudSave(false,true),3000); } }
 async function cloudSave(asNew,silent){
   if(!sb||!sbUser) return; clearTimeout(adT);
@@ -1255,7 +1284,7 @@ $('cloud-body').addEventListener('click',async e=>{ const b=e.target.closest('[d
   else if(a==='open') cloudOpen(b.dataset.id);
   else if(a==='del') twoClick(b,()=>cloudDelete(b.dataset.id));
   else if(a==='new') twoClick(b,()=>{ const keep={lahan:state.lahan,roof:state.roof,mat:state.mat,prices:state.prices,snap:state.snap}; state=Object.assign({v:2,sample:false,floors:[mkFloor('Lantai 1')],active:0},keep); cloudDetach(); sel=null; afterLoad(true); commit(); $('cloud').hidden=true; toast('Rancangan baru dimulai'); });
-  else if(a==='out'){ try{ await sb.auth.signOut(); }catch(err){} sbUser=null; cloudList=null; renderCloudBadge(); renderCloud(); }
+  else if(a==='out'){ try{ await sb.auth.signOut(); }catch(err){} sbUser=null; cloudList=null; cloudDetach(); renderCloudBadge(); $('cloud').hidden=true; try{ sessionStorage.removeItem('pr-skip'); }catch(err){} $('gate').hidden=false; }
 });
 
 /* ================= Siklus render ================= */
