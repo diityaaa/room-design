@@ -1600,7 +1600,7 @@ $('m-cloud').addEventListener('click',()=>$('btn-cloud').click());
 $('btn-tplopen').addEventListener('click',()=>{ const t=$('tpl'); t.focus(); try{ t.showPicker&&t.showPicker(); }catch(e){} toast('Pilih templat di kanan atas, lalu tekan Muat templat'); });
 const THK='perancang-rumah-tema';
 function applyTheme(m){ const r=document.documentElement; if(m==='light'||m==='dark') r.setAttribute('data-theme',m); else r.removeAttribute('data-theme'); document.querySelectorAll('[data-thm]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.thm===m))); }
-let thm='system'; try{ thm=localStorage.getItem(THK)||'system'; }catch(e){} applyTheme(thm);
+let thm='light'; try{ thm=localStorage.getItem(THK)||'light'; }catch(e){} applyTheme(thm);
 document.querySelectorAll('[data-thm]').forEach(b=>b.addEventListener('click',()=>{ thm=b.dataset.thm; try{ localStorage.setItem(THK,thm); }catch(e){} applyTheme(thm); }));
 
 /* ================= Siklus render ================= */
