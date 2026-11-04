@@ -96,6 +96,7 @@ label.f input[type=color]{padding:3px;height:40px}
 .ci{display:flex;flex-direction:column;align-items:center;gap:3px;border:1px solid transparent;background:var(--soft);border-radius:14px;padding:8px 5px;cursor:pointer;min-width:0;transition:border-color .15s,background .15s}
 .ci:hover{border-color:var(--accent);background:var(--accent-soft)}
 .ci svg{width:100%;height:50px}
+.ci img{width:100%;height:58px;object-fit:contain}
 .ci b{font-weight:600;font-size:11.5px;line-height:1.25;text-align:center;color:var(--ink)}
 .ci small{font-size:10.5px;color:var(--faint);font-variant-numeric:tabular-nums}
 .count{font-size:12px;color:var(--muted)}
@@ -549,6 +550,7 @@ label.f input[type=color]{padding:3px;height:40px}
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/geometries/RoundedBoxGeometry.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/environments/RoomEnvironment.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
 (function(){
@@ -708,6 +710,36 @@ D('pilar','Pilar bulat','Struktur',.35,.35,3.0,'putih',[C(.5,.5,0,.5,.04),C(.5,.
 D('partisi','Partisi kayu','Struktur',1.2,.05,2.2,'kayu',[B(0,0,0,1,1,1)]);
 D('railing','Railing balkon','Struktur',2.0,.06,1.0,'hitam',(()=>{ const p=[B(0,0,.94,1,1,1),B(0,0,0,.02,1,1),B(.98,0,0,1,1,1)]; for(let i=1;i<14;i++) p.push(B(i/14-.004,.2,0,i/14+.004,.8,.94)); return p; })());
 D('kanopi','Kanopi','Struktur',3.0,2.0,.08,'kaca',[B(0,0,0,1,1,1)],2.6);
+
+/* ================= Model 3D (Kenney Furniture Kit, CC0) ================= */
+const KN={"kasurSingle":["bedSingle",0],"kasurQueen":["bedDouble",0],"kasurKing":["bedDouble",0],"ranjangSusun":["bedBunk",0],"nakas":["cabinetBedDrawerTable",0],"lemari2":["bookcaseClosedDoors",0],"lemari3":["bookcaseClosedDoors",1],"mejaBelajar":["desk",0],"sofa3":["loungeSofa",0],"sofa2":["loungeDesignSofa",0],"sofa1":["loungeChair",0],"sofaL":["loungeSofaCorner",0],"armchair":["loungeDesignChair",0],"mejaTamu":["tableCoffee",0],"mejaKaca":["tableCoffeeGlass",0],"mejaKonsol":["sideTableDrawers",0],"rakTV":["cabinetTelevisionDoors",0],"tv55":["televisionModern",0],"rakBuku":["bookcaseOpen",0],"karpet":["rugRectangle",0],"karpetBundar":["rugRound",0],"lampuLantai":["lampRoundFloor",0],"mejaMakan4":["table",0],"mejaMakan6":["tableCloth",0],"mejaMakan8":["tableCross",0],"mejaBundar":["tableRound",0],"kursiMakan":["chairCushion",0],"kursiBar":["stoolBar",0],"kitchenBawah":["kitchenCabinetDrawer",1],"kitchenAtas":["kitchenCabinetUpper",1],"island":["kitchenBar",1],"kulkas1":["kitchenFridge",0],"kulkas2":["kitchenFridgeLarge",0],"microwave":["kitchenMicrowave",0],"tempatSampah":["trashcan",0],"klosetDuduk":["toilet",0],"wastafel":["bathroomSink",0],"wastafelKabinet":["bathroomSinkSquare",0],"shower":["shower",0],"bathtub":["bathtub",0],"cerminKM":["bathroomMirror",0],"mejaKerja":["desk",0],"mejaL":["deskCorner",0],"kursiKerja":["chairDesk",0],"mesinCuci":["washer",0],"pengering":["dryer",0],"monstera":["pottedPlant",0]};
+const KNEW=[["komporOven","Kompor dengan oven","Dapur",0.8,0.6,0.88,"putih","kitchenStove",0],["kabinetSink","Kabinet bak cuci","Dapur",0.8,0.6,0.95,"putih","kitchenSink",0],["hoodDapur","Cooker hood","Dapur",0.8,0.5,0.75,"logam","hoodModern",1.45],["kulkasTanam","Kulkas tanam","Dapur",0.8,0.62,1.75,"putih","kitchenFridgeBuiltIn",0],["mesinKopi","Mesin kopi","Dapur",0.37,0.47,0.35,"hitam","kitchenCoffeeMachine",0.9],["pemanggang","Pemanggang roti","Dapur",0.37,0.2,0.25,"logam","toaster",0.9],["blender","Blender","Dapur",0.27,0.21,0.44,"logam","kitchenBlender",0.9],["kursiSantaiRebah","Kursi santai rebah","Ruang Tamu",0.95,1.3,1.2,"kain","loungeChairRelax",0],["sofaChaise","Sofa chaise","Ruang Tamu",1.9,1.6,0.9,"kain","loungeSofaLong",0],["sofaModular","Sofa modular sudut","Ruang Tamu",2.6,2.6,0.78,"kain","loungeDesignSofaCorner",0],["ottoman","Ottoman","Ruang Tamu",0.86,0.88,0.45,"kain","loungeSofaOttoman",0],["mejaTamuKotak","Meja tamu kotak","Ruang Tamu",0.78,0.78,0.45,"kayu","tableCoffeeSquare",0],["rakBukuRendah","Rak buku rendah","Ruang Tamu",0.78,0.49,0.78,"kayu","bookcaseOpenLow",0],["speakerBesar","Speaker berdiri","Ruang Tamu",0.29,0.29,1.24,"kayu","speaker",0],["tvTabung","TV klasik","Ruang Tamu",0.8,0.53,0.53,"kayu","televisionVintage",0.5],["kursiMakanModern","Kursi makan modern","Ruang Makan",0.45,0.45,0.9,"kayu","chairModernFrameCushion",0],["kursiKayuLengkung","Kursi kayu lengkung","Ruang Makan",0.45,0.45,0.9,"kayu","chairRounded",0],["kursiKayu","Kursi kayu","Ruang Makan",0.45,0.45,0.92,"kayu","chair",0],["bangkuSandaran","Bangku bersandaran","Ruang Makan",0.9,0.45,0.92,"kayu","benchCushion",0],["mejaMakanKaca","Meja makan kaca","Ruang Makan",1.6,0.9,0.76,"logam","tableGlass",0],["kursiBarKotak","Kursi bar kotak","Ruang Makan",0.32,0.32,0.8,"kayu","stoolBarSquare",0],["kabinetKM","Kabinet wastafel laci","Kamar Mandi",0.84,0.62,0.92,"kayu","bathroomCabinetDrawer",0],["klosetKotak","Kloset duduk kotak","Kamar Mandi",0.45,0.7,0.8,"putih","toiletSquare",0],["showerBulat","Shower sudut bulat","Kamar Mandi",0.9,0.9,2.0,"kaca","showerRound",0],["monitor","Monitor komputer","Ruang Kerja",0.6,0.16,0.45,"hitam","computerScreen",0.75],["laptop","Laptop","Ruang Kerja",0.36,0.33,0.22,"logam","laptop",0.75],["keyboard","Keyboard","Ruang Kerja",0.44,0.18,0.04,"putih","computerKeyboard",0.75],["mesinCuciTumpuk","Mesin cuci & pengering tumpuk","Servis",0.6,0.6,1.8,"putih","washerDryerStacked",0],["kardus","Kardus","Servis",0.4,0.4,0.52,"kayu","cardboardBoxClosed",0],["gantunganBaju","Gantungan baju berdiri","Kamar Tidur",0.5,0.5,1.6,"kayu","coatRackStanding",0],["gantunganDinding","Gantungan baju dinding","Kamar Tidur",0.8,0.25,0.5,"kayu","coatRack",1.4],["nakasLaci","Nakas laci","Kamar Tidur",0.5,0.42,0.5,"kayu","cabinetBedDrawer",0],["lampuMeja","Lampu meja bulat","Dekorasi",0.3,0.34,0.6,"kapLampu","lampRoundTable",0.55],["lampuMejaKotak","Lampu meja kotak","Dekorasi",0.24,0.24,0.55,"kapLampu","lampSquareTable",0.55],["lampuLantaiKotak","Lampu lantai kotak","Dekorasi",0.24,0.24,1.65,"kapLampu","lampSquareFloor",0],["lampuGantung","Lampu gantung","Dekorasi",0.24,0.24,0.45,"kapLampu","lampSquareCeiling",2.55],["lampuDinding","Lampu dinding","Dekorasi",0.44,0.29,0.18,"kapLampu","lampWall",1.8],["kipasPlafon","Kipas angin plafon","Dekorasi",0.9,1.0,0.26,"kayu","ceilingFan",2.74],["tanamanKecil","Tanaman meja","Dekorasi",0.19,0.19,0.28,"daun","plantSmall2",0.75],["buku","Tumpukan buku","Dekorasi",0.29,0.18,0.2,"buku1","books",0.75],["radio","Radio","Dekorasi",0.6,0.19,0.44,"kayu","radio",0.75],["boneka","Boneka beruang","Dekorasi",0.45,0.29,0.52,"kayu","bear",0],["bantalSofa","Bantal sofa","Dekorasi",0.45,0.17,0.43,"kain","pillow",0.45],["keset","Keset","Dekorasi",0.8,0.45,0.01,"karpet","rugDoormat",0],["karpetPersegi","Karpet persegi","Ruang Tamu",1.8,1.8,0.01,"karpet","rugSquare",0],["karpetOval","Karpet sudut membulat","Ruang Tamu",2.4,1.4,0.01,"karpet","rugRounded",0]];
+KNEW.forEach(([id,name,cat,w,d,h,M,model,elev])=>{ D(id,name,cat,w,d,h,M,[B(0,0,0,1,1,1)],elev); CAT[id].glb=model; CAT[id].tile=0; });
+Object.entries(KN).forEach(([id,[mdl,t]])=>{ if(CAT[id]){ CAT[id].glb=mdl; CAT[id].tile=t; } });
+function kmat(n,mainHex,mainKind){
+  const sh=(h,v)=>{ const c=parseInt(h.slice(1),16); const f=x=>Math.max(0,Math.min(255,Math.round(x+v))).toString(16).padStart(2,'0'); return '#'+f(c>>16)+f((c>>8)&255)+f(c&255); };
+  const fab=mainKind==='kain'?mainHex:'#8fa79b';
+  switch(n){
+    case 'wood': return mainKind==='kayu'?[mainHex,'kayu']:(mainKind==='kain'||mainKind==='daun'||mainKind==='lampu'||mainKind==='kertas'||mainKind==='kaca')?['#c69c6d','kayu']:[mainHex,'plastik'];
+    case 'woodDark': return mainKind==='kayu'?[sh(mainHex,-45),'kayu']:['#6f4e34','kayu'];
+    case 'carpet': return [fab,'kain'];
+    case 'carpetDarker': return [sh(fab,-38),'kain'];
+    case 'carpetBlue': return mainKind==='kain'?[sh(mainHex,18),'kain']:['#7d93a8','kain'];
+    case 'carpetWhite': return ['#f1eee7','kain'];
+    case 'metal': return ['#b9bfc3','logam'];
+    case 'metalLight': return mainKind==='plastik'&&mainHex!=='#f2f1ec'?[mainHex,'plastik']:['#efefeb','keramik'];
+    case 'metalMedium': return ['#6d767b','logam'];
+    case 'metalDark': return ['#2f3336','plastik'];
+    case 'glass': return ['#a8d0e2','kaca'];
+    case 'lamp': return ['#fff1c9','lampu'];
+    case 'plant': return ['#4f8a45','daun'];
+    case 'fur': return ['#a5754c','kain'];
+    default: return ['#f4f4f1','keramik'];
+  }
+}
+let KA=null; const MODELS={};
+function tileN(def,w){ if(!def.tile||!KA||!KA.box[def.glb]) return 1; return Math.max(1,Math.round(w/(KA.box[def.glb].size[0]*1.95))); }
+function loadFurniture(){ fetch('furnitur.json').then(r=>r.ok?r.json():null).then(j=>{ if(!j||!j.models) return; KA=j; renderCatalog(); refresh(); }).catch(()=>{}); }
 
 /* ================= Ruang & bukaan ================= */
 const RT={tidur:{n:'Kamar Tidur',w:3,h:3},mandi:{n:'Kamar Mandi',w:1.5,h:2},dapur:{n:'Dapur',w:3,h:2.5},keluarga:{n:'Ruang Keluarga',w:4,h:4},
@@ -917,6 +949,12 @@ function partsSVG(def,col,w,d,sw){
     if(p[0]==='s'&&kd==='daun'){ const cx=(p[1]-.5)*w, cy=(p[2]-.5)*d, rx=p[4]*w, ry=p[4]*d; return `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${c}" stroke="#0f172a" stroke-opacity=".25" stroke-width="${sw}"/>`+[[-.35,-.3,.5],[.32,-.15,.45],[-.1,.35,.5],[.3,.32,.38]].map(([a,b,k])=>`<ellipse cx="${cx+a*rx}" cy="${cy+b*ry}" rx="${rx*k}" ry="${ry*k}" fill="#ffffff" fill-opacity=".09"/>`).join(''); }
     return `<ellipse cx="${(p[1]-.5)*w}" cy="${(p[2]-.5)*d}" rx="${p[4]*w}" ry="${p[4]*d}" fill="${c}" stroke="#0f172a" stroke-opacity=".28" stroke-width="${sw}"${kd==='kaca'?' fill-opacity=".55"':''}/>`; }).join('');
 }
+function itemSVG(def,it){
+  const top=KA&&def.glb&&KA.top[def.id]; if(!top) return partsSVG(def,it.c||def.M,it.w,it.d,.012);
+  const n=tileN(def,it.w), mw=it.w/n; let h='';
+  for(let i=0;i<n;i++){ const x=-it.w/2+mw*i; h+=`<image href="${top}" x="${x}" y="${-it.d/2}" width="${mw}" height="${it.d}" preserveAspectRatio="none"/>`;
+    if(it.c){ const mid='mk'+it.id+'_'+i; h+=`<mask id="${mid}" style="mask-type:alpha"><image href="${top}" x="${x}" y="${-it.d/2}" width="${mw}" height="${it.d}" preserveAspectRatio="none"/></mask><rect x="${x}" y="${-it.d/2}" width="${mw}" height="${it.d}" fill="${it.c}" mask="url(#${mid})" style="mix-blend-mode:color" opacity=".85"/>`; } }
+  return h; }
 function openingSym(o,t){
   const a=o.pos-o.w/2, b=o.pos+o.w/2, k=OP[o.kind], h2=t/2; let s='';
   s+=`<line class="sym" x1="${a}" y1="${-h2}" x2="${a}" y2="${h2}"/><line class="sym" x1="${b}" y1="${-h2}" x2="${b}" y2="${h2}"/>`;
@@ -962,7 +1000,7 @@ function renderPlan(an){
     ops.forEach(o=>{ const so=sel&&sel.k==='open'&&sel.id===o.id; h+=`<g class="op${so?' sel':''}" data-open="${o.id}" transform="translate(${w.x1} ${w.y1}) rotate(${ang})">${openingSym(o,t)}<rect class="hit" x="${o.pos-o.w/2}" y="${-t/2-.08}" width="${o.w}" height="${t+.16}"/></g>`; });
   });
   f.items.forEach(it=>{ const def=CAT[it.cid]; if(!def) return; const s=sel&&sel.k==='item'&&sel.id===it.id;
-    h+=`<g class="it${s?' sel':''}" data-item="${it.id}" transform="translate(${it.x} ${it.y}) rotate(${it.rot})" opacity="${it.elev>1.2?.8:1}"${it.h>.03?' filter="url(#fsh)"':''}>${partsSVG(def,it.c||def.M,it.w,it.d,.012)}<rect class="hit" x="${-it.w/2}" y="${-it.d/2}" width="${it.w}" height="${it.d}"/></g>`; });
+    h+=`<g class="it${s?' sel':''}" data-item="${it.id}" transform="translate(${it.x} ${it.y}) rotate(${it.rot})" opacity="${it.elev>1.2?.8:1}"${it.h>.03?' filter="url(#fsh)"':''}>${itemSVG(def,it)}<rect class="hit" x="${-it.w/2}" y="${-it.d/2}" width="${it.w}" height="${it.d}"/></g>`; });
   h+=labels;
   const o=selObj();
   if(o&&sel.k==='room') h+=`<rect class="hd" data-h="room" x="${o.x+o.w-.14}" y="${o.y+o.h-.14}" width=".28" height=".28" rx=".04"/>`;
@@ -1180,7 +1218,7 @@ function removeSel(){ if(!sel) return; const f=floor();
 
 /* ================= Katalog & panel kiri ================= */
 let catSel='Semua', catQ='';
-function thumb(def){ const m=Math.max(def.w,def.d)*.08, w=def.w+m*2, d=def.d+m*2; return `<svg viewBox="${-w/2} ${-d/2} ${w} ${d}" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${partsSVG(def,def.M,def.w,def.d,Math.max(def.w,def.d)*.012)}</svg>`; }
+function thumb(def){ if(KA&&def.glb&&KA.thumb[def.id]) return `<img src="${KA.thumb[def.id]}" alt="" loading="lazy">`; const m=Math.max(def.w,def.d)*.08, w=def.w+m*2, d=def.d+m*2; return `<svg viewBox="${-w/2} ${-d/2} ${w} ${d}" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${partsSVG(def,def.M,def.w,def.d,Math.max(def.w,def.d)*.012)}</svg>`; }
 function renderCatalog(){
   $('cat-chips').innerHTML=['Semua',...CATS].map(c=>`<button class="chip" type="button" data-cat="${c}" aria-pressed="${c===catSel}">${c}</button>`).join('');
   const list=Object.values(CAT).filter(d=>(catSel==='Semua'||d.cat===catSel)&&(!catQ||d.name.toLowerCase().includes(catQ)||d.cat.toLowerCase().includes(catQ)));
@@ -1321,10 +1359,10 @@ function floorMat(key,w,h){ const F=FLOORDRAW[key]||FLOORDRAW.keramik, ck='f:'+k
   if(!T.mats[ck]){ const bk='fb:'+key; if(!T.tex[bk]) T.tex[bk]=mkTex(cnv(512,F.d)); const t=T.tex[bk].clone(); t.needsUpdate=true; t.repeat.set(w/F.m,h/F.m);
     const wood=key==='parket'||key==='deck'; T.mats[ck]=new THREE.MeshStandardMaterial({map:t,roughness:wood?.55:key==='rumput'||key==='semen'||key==='batu'?.95:.28,metalness:0,envMapIntensity:wood?.5:.7}); }
   return T.mats[ck]; }
-function mat(hex,o){ o=o||{}; const kd=o.kind||(o.op?'kaca':'umum'), k=hex+'|'+kd+(o.op||'')+(o.side||'');
+function mat(hex,o){ o=o||{}; const kd=o.kind||(o.op?'kaca':'umum'), k=hex+'|'+kd+(o.op||'')+(o.side||'')+(o.nomap?'n':'');
   if(!T.mats[k]){ const col=new THREE.Color(hex).convertSRGBToLinear(), P={color:col,roughness:.6,metalness:0,envMapIntensity:.55,side:o.side?THREE.DoubleSide:THREE.FrontSide};
-    if(kd==='kain'){ P.map=baseTex('kain'); P.roughness=.95; P.envMapIntensity=.25; }
-    else if(kd==='kayu'){ P.map=baseTex('kayu'); P.roughness=.5; P.envMapIntensity=.55; }
+    if(kd==='kain'){ if(!o.nomap) P.map=baseTex('kain'); P.roughness=.95; P.envMapIntensity=.25; }
+    else if(kd==='kayu'){ if(!o.nomap) P.map=baseTex('kayu'); P.roughness=.5; P.envMapIntensity=.55; }
     else if(kd==='logam'){ P.roughness=.28; P.metalness=.9; P.envMapIntensity=1.1; }
     else if(kd==='kaca'){ P.roughness=.04; P.transparent=true; P.opacity=o.op||.3; P.depthWrite=false; P.envMapIntensity=1.3; }
     else if(kd==='keramik'){ P.roughness=.18; P.envMapIntensity=.9; }
@@ -1338,6 +1376,20 @@ function mat(hex,o){ o=o||{}; const kd=o.kind||(o.op?'kaca':'umum'), k=hex+'|'+k
     else if(kd==='paving'||kd==='aspal'){ P.map=mkTex(cnv(256,TEXDRAW[kd]),o.rep||[1,1]); P.color=new THREE.Color('#ffffff'); P.roughness=.9; P.envMapIntensity=.25; }
     T.mats[k]=new THREE.MeshStandardMaterial(P); }
   return T.mats[k]; }
+function getModel(name){ if(!KA||!KA.models[name]||!THREE.GLTFLoader) return null; const c=MODELS[name]; if(c) return c.scene?c:null;
+  MODELS[name]={loading:true};
+  try{ const bin=Uint8Array.from(atob(KA.models[name]),ch=>ch.charCodeAt(0)).buffer;
+    new THREE.GLTFLoader().parse(bin,'',gl=>{ const sc=gl.scene; sc.updateMatrixWorld(true); sc.traverse(o=>{ if(o.isMesh) o.geometry.userData.keep=true; }); const b=new THREE.Box3().setFromObject(sc); MODELS[name]={scene:sc,min:b.min.clone(),size:b.getSize(new THREE.Vector3())}; schedule3D(); },()=>{ MODELS[name]={fail:true}; }); }
+  catch(e){ MODELS[name]={fail:true}; }
+  return null; }
+let s3T=0; function schedule3D(){ clearTimeout(s3T); s3T=setTimeout(()=>{ if(view==='3d'||view==='jalan') build3D(); },60); }
+function placeModel(g,it,d){ const M=getModel(d.glb); if(!M) return false;
+  const n=tileN(d,it.w), mw=it.w/n, mk=kindOf(d.Mk), main=it.c||d.M;
+  const mm=x=>{ const [hex,kd]=kmat(x.name,main,mk); return mat(hex,kd==='kaca'?{kind:'kaca',op:.35}:{kind:kd,nomap:1}); };
+  for(let i=0;i<n;i++){ const o=M.scene.clone(true); o.traverse(m=>{ if(m.isMesh){ m.material=Array.isArray(m.material)?m.material.map(mm):mm(m.material); m.castShadow=!m.material.transparent; m.receiveShadow=true; } });
+    const sx=mw/M.size.x, sy=it.h/M.size.y, sz=it.d/M.size.z; o.scale.set(sx,sy,sz);
+    o.position.set(-it.w/2+mw*i+mw/2-(M.min.x+M.size.x/2)*sx, -M.min.y*sy, -(M.min.z+M.size.z/2)*sz); g.add(o); }
+  return true; }
 function rbGeo(sx,sy,sz,r){ const k=[sx,sy,sz,r].map(v=>v.toFixed(3)).join(','); if(!T.rb[k]){ const g=new THREE.RoundedBoxGeometry(sx,sy,sz,2,r); g.userData.keep=true; T.rb[k]=g; } return T.rb[k]; }
 function addPart(g,x,y,z,sx,sy,sz,m,kd){
   sx=Math.max(.002,sx); sy=Math.max(.002,sy); sz=Math.max(.002,sz); const mn=Math.min(sx,sy,sz); let mesh;
@@ -1366,6 +1418,7 @@ function build3D(){
       ops.forEach(o=>{ const a=o.pos-o.w/2, c=o.pos+o.w/2, k=OP[o.kind], top=Math.min(H,(k.door?0:o.s)+o.h), sill=k.door?0:o.s; seg(cur,a,0,H); seg(a,c,top,H); if(sill>0) seg(a,c,0,sill); cur=c; buildOpening(g,o,t,sill,top); });
       seg(cur,Lw,0,H); });
     f.items.forEach(it=>{ const d=CAT[it.cid]; if(!d) return; const g=new THREE.Group(); g.position.set(ox+it.x,b+it.elev,oz+it.y); g.rotation.y=-it.rot*Math.PI/180; fg.add(g);
+      if(d.glb&&placeModel(g,it,d)) return;
       const main=it.c||d.M; d.parts.forEach(p=>{ const ck=p[p.length-1], hex=ck==='M'?main:(COL[ck]||ck), kd=kindOf(ck==='M'?d.Mk:ck), glass=kd==='kaca', m=mat(hex,glass?{kind:'kaca',op:ck==='air'?.6:.32}:{kind:kd});
         if(p[0]==='b') addPart(g,((p[1]+p[4])/2-.5)*it.w,(p[3]+p[6])/2*it.h,((p[2]+p[5])/2-.5)*it.d,(p[4]-p[1])*it.w,(p[6]-p[3])*it.h,(p[5]-p[2])*it.d,m,kd);
         else if(p[0]==='s'&&kd==='daun'){ const r=rnd(Math.floor(it.x*97+it.y*31)+p[1]*13), cx=(p[1]-.5)*it.w, cy=p[3]*it.h, cz=(p[2]-.5)*it.d, rx=p[4]*it.w, ry=p[5]*it.h, rz=p[4]*it.d;
@@ -1556,7 +1609,7 @@ function refresh(light){ const an=analyze(); if(view==='2d'||!light) renderPlan(
 function afterLoad(refit){ fillLahan(); renderSnap(); renderFloors(); renderProps(); $('sample-badge').hidden=!state.sample; if(refit){ fitView(); if(T) T.placed=false; } refresh(); }
 const mq=window.matchMedia('(prefers-color-scheme: dark)'); if(mq.addEventListener) mq.addEventListener('change',()=>refresh());
 new MutationObserver(()=>refresh()).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
-fitView(); renderCatalog(); setTool('pilih'); setView('2d'); afterLoad(false); commit(); initCloud();
+fitView(); renderCatalog(); setTool('pilih'); setView('2d'); afterLoad(false); commit(); initCloud(); loadFurniture();
 })();
 </script>
 </body>
