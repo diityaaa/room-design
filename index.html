@@ -246,13 +246,36 @@ label.f input[type=color]{padding:3px;height:40px}
   .right{display:flex}
   .right .sec + .sec{border-top:1px solid var(--line);padding-top:14px}
   .tool kbd{display:none}
-  .hint{display:none}
 }
 @media (pointer:coarse){ label.f input,label.f select,.search,textarea{font-size:16px} }
 .ibtn{width:34px;height:34px;border:none;border-radius:10px;background:var(--soft);color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
 .ibtn:hover{color:var(--strong)}
 .ibtn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .seg button{flex:none;padding:6px 10px}
+
+/* ---------- Penyelarasan tata letak papan ---------- */
+.bar{min-height:54px}
+.vsep{width:1px;height:22px;background:var(--line);margin:0 2px}
+.zoom{display:inline-flex;align-items:center;gap:4px;background:var(--soft);border-radius:12px;padding:4px}
+.zoom button{border:none;background:var(--panel);border-radius:8px;min-width:30px;height:28px;cursor:pointer;font-weight:700;color:var(--ink);box-shadow:0 1px 2px rgba(15,23,42,.06)}
+.zoom button#z-fit{padding:0 10px;font-weight:600;font-size:12.5px}
+.zlbl{min-width:46px;text-align:center;font-size:12.5px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.bar3d{display:flex;align-items:center;gap:12px;font-size:12.5px;font-weight:600;color:var(--ink);white-space:nowrap}
+.bar3d label{display:inline-flex;align-items:center;gap:6px}
+.bar3d select{background:var(--field);border:1px solid var(--line);border-radius:10px;height:32px;padding:0 8px}
+.bar3d input[type=checkbox]{accent-color:var(--accent)}
+.statusbar{border-top:1px solid var(--line);padding:9px 16px;min-height:38px;display:flex;align-items:center}
+.statusbar .hint{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:100%}
+.right{position:relative}
+.right .herosec{flex:none}
+.right .herosec .cost{font-size:24px}
+.right .herosec .kv{gap:3px 10px}
+.rscroll{display:contents}
+.meter .row b{white-space:nowrap}
+.meter .row span{min-width:0}
+@media (max-width:1500px){ .tool{font-size:0;gap:0;padding:0 10px} .tool[aria-pressed="true"]{font-size:12.5px;gap:6px} }
+@media (max-width:1440px){ .ptab{padding:6px 6px;font-size:12.5px} }
+@media (max-height:860px){ .right .herosec{padding:14px 16px!important} .right .herosec .kv{display:none} .right .herosec .cost{font-size:21px} .right .herosec h2{font-size:12px} }
 /* ---------- Shell ala Brankas: sidebar kiri, judul halaman, bottom nav di ponsel ---------- */
 .side{display:none}
 .mbar,.bnav{display:none}
@@ -344,6 +367,10 @@ label.f input[type=color]{padding:3px;height:40px}
   .cat{flex:1;min-height:0;max-height:none;align-content:start}
   .board{min-height:0}
   .stage{flex:1;height:auto;min-height:0}
+  .right{overflow:hidden}
+  .rscroll{display:flex;flex-direction:column;gap:14px;flex:1;min-height:0;overflow-y:auto;margin:-4px -16px 0;padding:4px 16px 4px}
+  .rscroll::-webkit-scrollbar{width:6px} .rscroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:999px}
+  .rscroll > .sec + .sec{border-top:1px solid var(--line);padding-top:14px}
 }
 @media (min-width:1025px) and (max-width:1240px) and (min-height:600px){
   .app{grid-template-columns:230px minmax(0,1fr) 260px}
@@ -459,25 +486,31 @@ label.f input[type=color]{padding:3px;height:40px}
       <button class="tool" type="button" data-tool="ukur" title="Ukur jarak (M)"><svg viewBox="0 0 16 16"><path d="M2 11l9-9 3 3-9 9zM5 8l1.5 1.5M7 6l1.5 1.5M9 4l1.5 1.5"/></svg>Ukur<kbd>M</kbd></button>
       <select class="mini" id="op-kind" aria-label="Model bukaan" hidden></select>
       <span class="sp"></span>
+      <div class="seg" aria-label="Kelipatan geser"><button type="button" data-snap="0.05">5 cm</button><button type="button" data-snap="0.1">10 cm</button><button type="button" data-snap="0.5">50 cm</button></div>
+      <span class="vsep"></span>
+      <button class="ibtn" type="button" id="btn-undo" title="Urungkan (Ctrl+Z)" aria-label="Urungkan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button>
+      <button class="ibtn" type="button" id="btn-redo" title="Ulangi (Ctrl+Y)" aria-label="Ulangi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></svg></button>
     </div>
     <div class="bar">
       <div class="tabs" id="floor-tabs" role="tablist"></div>
       <span class="sp"></span>
-      <div class="seg" aria-label="Kelipatan geser"><button type="button" data-snap="0.05">5 cm</button><button type="button" data-snap="0.1">10 cm</button><button type="button" data-snap="0.5">50 cm</button></div>
-      <button class="ibtn" type="button" id="btn-undo" title="Urungkan (Ctrl+Z)" aria-label="Urungkan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button>
-      <button class="ibtn" type="button" id="btn-redo" title="Ulangi (Ctrl+Y)" aria-label="Ulangi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></svg></button>
-    </div>
-    <div class="stage" id="stage">
-      <svg id="plan" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" aria-label="Denah lantai"></svg>
-      <div id="view3d" hidden></div>
-      <div class="rab" id="rab" hidden></div>
-      <div class="ov bar3d" id="bar3d" hidden>
+      <div class="zoom" id="zoombox"><span class="zlbl" id="z-lbl">100%</span><button type="button" id="z-in" aria-label="Perbesar">+</button><button type="button" id="z-out" aria-label="Perkecil">−</button><button type="button" id="z-fit">Pas</button></div>
+      <div class="bar3d" id="bar3d" hidden>
         <label for="show-floors">Tampilkan</label>
         <select id="show-floors"></select>
         <label><input type="checkbox" id="show-roof" checked> Atap</label>
         <label title="Bayangan sudut (ambient occlusion) dan bayangan tajam. Matikan bila terasa berat."><input type="checkbox" id="hq"> Kualitas tinggi</label>
         <button class="btn small" type="button" id="btn-recenter">Pusatkan</button>
       </div>
+      
+      
+      
+    </div>
+    <div class="stage" id="stage">
+      <svg id="plan" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" aria-label="Denah lantai"></svg>
+      <div id="view3d" hidden></div>
+      <div class="rab" id="rab" hidden></div>
+      
       <div class="ov walkpad" id="walkpad" hidden>
         <button type="button" class="up" data-k="w" aria-label="Maju">▲</button>
         <button type="button" data-k="a" aria-label="Geser kiri">◀</button>
@@ -486,12 +519,14 @@ label.f input[type=color]{padding:3px;height:40px}
       </div>
       <button class="ov doorbtn" id="door-btn" type="button" hidden></button>
       <span class="ov sample" id="sample-badge" hidden>Contoh rancangan, silakan diubah</span>
-      <div class="ov zoom" id="zoombox"><button type="button" id="z-in" aria-label="Perbesar">+</button><button type="button" id="z-out" aria-label="Perkecil">−</button><button type="button" id="z-fit">Pas</button></div>
-      <span class="ov hint" id="hint"></span>
+      
+      
     </div>
+    <div class="statusbar"><span class="hint" id="hint"></span></div>
   </section>
 
   <aside class="panel right">
+    <div class="rscroll">
     <section class="sec" id="props"></section>
     <section class="sec">
       <h2>Kepatuhan lahan</h2>
@@ -501,6 +536,7 @@ label.f input[type=color]{padding:3px;height:40px}
       <h2>Catatan pemeriksaan</h2>
       <ul class="warns" id="warns"></ul>
     </section>
+    </div>
     <section class="sec herosec">
       <h2>Estimasi RAB kasar</h2>
       <div class="cost" id="cost"></div>
@@ -952,7 +988,7 @@ function rab(){
 /* ================= SVG 2D ================= */
 const svg=$('plan');
 function fitView(){ const L=state.lahan; const pad=1.6; vb={x:-pad,y:-pad-.2,w:L.w+pad*2,h:L.l+pad*2+.9}; }
-function setVB(){ svg.setAttribute('viewBox',`${vb.x} ${vb.y} ${vb.w} ${vb.h}`); }
+function setVB(){ svg.setAttribute('viewBox',`${vb.x} ${vb.y} ${vb.w} ${vb.h}`); const zl=$('z-lbl'); if(zl){ const L=state.lahan; zl.textContent=Math.round((L.w+3.2)/vb.w*100)+'%'; } }
 function partsSVG(def,col,w,d,sw){
   const ps=def.parts.slice().sort((a,b)=>(a[0]==='s'?a[3]+a[5]:a[0]==='c'?a[5]:a[6])-(b[0]==='s'?b[3]+b[5]:b[0]==='c'?b[5]:b[6]));
   return ps.map(p=>{ const key=p[p.length-1], c=key==='M'?col:(COL[key]||key), kd=kindOf(key==='M'?def.Mk:key);
@@ -1150,7 +1186,7 @@ function setTool(t){ tool=t; wallStart=null; preview=null; if(t!=='ukur') measur
   svg.style.cursor=t==='pilih'?'default':'crosshair'; if(view!=='2d') setView('2d'); updHint(); refresh(true); }
 $('op-kind').addEventListener('change',e=>{ opKind[tool]=e.target.value; });
 document.querySelectorAll('[data-tool]').forEach(b=>b.addEventListener('click',()=>setTool(b.dataset.tool)));
-function updHint(){ $('hint').textContent=view==='2d'?HINTS[tool]:view==='3d'?'Seret untuk memutar · scroll atau cubit untuk zoom · klik kanan atau dua jari untuk menggeser':view==='jalan'?'W A S D atau tombol panah untuk berjalan · seret layar untuk melihat sekeliling · Shift untuk berlari · ganti lantai lewat tab lantai':''; $('hint').hidden=view==='rab'; }
+function updHint(){ $('hint').textContent=view==='2d'?HINTS[tool]:view==='3d'?'Seret untuk memutar · scroll atau cubit untuk zoom · klik kanan atau dua jari untuk menggeser · klik daun pintu untuk membuka atau menutup':view==='jalan'?'W A S D atau tombol panah untuk berjalan · seret layar untuk melihat sekeliling · Shift untuk berlari · F untuk membuka atau menutup pintu terdekat':''; $('hint').parentNode.hidden=view==='rab'; }
 function renderSnap(){ document.querySelectorAll('[data-snap]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.snap===state.snap))); }
 document.querySelectorAll('[data-snap]').forEach(b=>b.addEventListener('click',()=>{ state.snap=+b.dataset.snap; renderSnap(); save(); }));
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
